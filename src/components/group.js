@@ -1,0 +1,77 @@
+import { v4 as uuid } from "uuid"
+export const areaJSON = (v) => [
+    {
+        "id": uuid(),
+        "value": "",
+        "title": "户口地址",
+        "span": "auto / 1 / auto / 10",
+        "type": "SELECT",
+        "showTitle": "1",
+        "paged": "0",
+        "multipled": "0",
+        "optionValue": "province",
+        "label": `${String(v).toUpperCase()}_SHENG`,
+        "unAutoLoad": "1",
+        "placeholder": "省"
+    },
+    {
+        "id": uuid(),
+        "value": "",
+        "title": "市",
+        "span": "auto / 10 / auto / 15",
+        "type": "SELECT",
+        "showTitle": "0",
+        "paged": "0",
+        "multipled": "0",
+        "func": `${String(v).toUpperCase()}_SHENG`,
+        "label": `${String(v).toUpperCase()}_SHI`,
+        "optionValue": "city",
+        "unAutoLoad": "1",
+        "placeholder": "市"
+    },
+    {
+        "id": uuid(),
+        "value": "",
+        "title": "县",
+        "span": "auto / 15 / auto / 20",
+        "type": "SELECT",
+        "showTitle": "0",
+        "paged": "0",
+        "multipled": "0",
+        "func": `${String(v).toUpperCase()}_SHI`,
+        "label": `${String(v).toUpperCase()}_XIAN`,
+        "optionValue": "county",
+        "unAutoLoad": "1",
+        "placeholder": "区县"
+    },
+    {
+        "id": uuid(),
+        "value": "",
+        "title": "街道",
+        "span": "auto / 20 / auto / 25",
+        "type": "SELECT",
+        "showTitle": "0",
+        "label": `${String(v).toUpperCase()}_JIANDAO`,
+        "paged": "0",
+        "multipled": "0",
+        "func": `${String(v).toUpperCase()}_XIAN`,
+        "unAutoLoad": "1",
+        "optionValue": "town",
+        "placeholder": "乡镇街道"
+    },
+    {
+        "id": uuid(),
+        "value": "",
+        "title": "村",
+        "span": "auto / 25 / auto / 31",
+        "type": "SELECT",
+        "showTitle": "0",
+        "paged": "0",
+        "multipled": "0",
+        "label": `${String(v).toUpperCase()}_CHUN`,
+        "func": `${String(v).toUpperCase()}_JIANDAO`,
+        "unAutoLoad": "1",
+        "optionValue": "ZJ-village",
+        "placeholder": "村/居委会"
+    }
+]
