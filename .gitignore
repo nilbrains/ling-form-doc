@@ -22,6 +22,7 @@ test/
 /cypress/screenshots/
 
 # Editor directories and files
+.codebuddy/
 .vscode/*
 !.vscode/extensions.json
 .idea
