@@ -1,4 +1,21 @@
 import { v4 as uuid } from "uuid"
+import { areaJSON } from "./group"
+
+// 在五级联动后面追加一个详细地址输入框（占满整行，31 对应 comp.js 的 GRID_LINES）
+function areaWithDetail(prefix, title, detailTitle, detailLabel) {
+    return [
+        ...areaJSON(prefix, title),
+        {
+            id: uuid(),
+            value: "",
+            title: detailTitle,
+            span: "auto / 1 / auto / 31",
+            type: "INPUT",
+            showTitle: "1",
+            label: detailLabel,
+        },
+    ]
+}
 
 export const customs = {
     TL_1: {
@@ -49,7 +66,7 @@ export const customs = {
             showTitle: "1"
         }])
     },
-    N_CHECK: {
+    N_SELECT: {
         title: "选择框",
         comp: () => ([{
             id: uuid(),
@@ -60,7 +77,7 @@ export const customs = {
             showTitle: "1"
         }])
     },
-    N_RADIO: {
+    N_CHECK: {
         title: "多选框",
         comp: () => ([{
             id: uuid(),
@@ -71,7 +88,7 @@ export const customs = {
             showTitle: "1"
         }])
     },
-    N_SELECT: {
+    N_RADIO: {
         title: "单选框",
         comp: () => ([{
             id: uuid(),
@@ -184,7 +201,6 @@ export const customs = {
             inputType: "date",
         }])
     },
-
     CUS_MZDM: {
         title: "民族",
         comp: () => ([{
@@ -201,178 +217,12 @@ export const customs = {
             optionValue: "nation",
         }])
     },
-
     CUS_HKDZ: {
         title: "户口地址",
-        comp: () => ([{
-            id: uuid(),
-            value: "",
-            title: "户口地址",
-            span: "auto / 1 / auto / 10",
-            type: "SELECT",
-            showTitle: "1",
-            paged: "0",
-            multipled: "0",
-            optionValue: "province",
-            label: "HK_SHENG",
-            placeholder: "省",
-            unAutoLoad: "0",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "市",
-            span: "auto / 10 / auto / 15",
-            type: "SELECT",
-            showTitle: "0",
-            paged: "0",
-            multipled: "0",
-            func: "HK_SHENG",
-            label: "HK_SHI",
-            optionValue: "city",
-            placeholder: "市",
-            unAutoLoad: "1",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "县",
-            span: "auto / 15 / auto / 20",
-            type: "SELECT",
-            showTitle: "0",
-            paged: "0",
-            multipled: "0",
-            func: "HK_SHI",
-            label: "HK_XIAN",
-            optionValue: "county",
-            placeholder: "区县",
-            unAutoLoad: "1",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "街道",
-            span: "auto / 20 / auto / 25",
-            type: "SELECT",
-            showTitle: "0",
-            label: "HK_JIANDAO",
-            paged: "0",
-            multipled: "0",
-            func: "HK_XIAN",
-            optionValue: "town",
-            placeholder: "乡镇街道",
-            unAutoLoad: "1",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "村",
-            span: "auto / 25 / auto / 31",
-            type: "SELECT",
-            showTitle: "0",
-            paged: "0",
-            multipled: "0",
-            label: "HK_CHUN",
-            func: "HK_JIANDAO",
-            optionValue: "ZJ-village",
-            placeholder: "村/居委会",
-            unAutoLoad: "1",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "户口详细地址",
-            span: "auto / 1 / auto / 31",
-            type: "INPUT",
-            showTitle: "1",
-            label: "VC_HJDZXXDZ",
-        }])
+        comp: () => areaWithDetail("HK", "户口地址", "户口详细地址", "VC_HJDZXXDZ"),
     },
-
-
     CUS_JZDZ: {
         title: "居住地址",
-        comp: () => ([{
-            id: uuid(),
-            value: "",
-            title: "居住地址",
-            span: "auto / 1 / auto / 10",
-            type: "SELECT",
-            showTitle: "1",
-            paged: "0",
-            multipled: "0",
-            optionValue: "province",
-            label: "JZD_SHENG",
-            placeholder: "省",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "市",
-            span: "auto / 10 / auto / 15",
-            type: "SELECT",
-            showTitle: "0",
-            paged: "0",
-            multipled: "0",
-            func: "JZD_SHENG",
-            label: "JZD_SHI",
-            optionValue: "city",
-            placeholder: "市",
-            unAutoLoad: "1",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "县",
-            span: "auto / 15 / auto / 20",
-            type: "SELECT",
-            showTitle: "0",
-            paged: "0",
-            multipled: "0",
-            func: "JZD_SHI",
-            label: "JZD_XIAN",
-            optionValue: "county",
-            placeholder: "区县",
-            unAutoLoad: "1",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "街道",
-            span: "auto / 20 / auto / 25",
-            type: "SELECT",
-            showTitle: "0",
-            label: "JZD_JIANDAO",
-            paged: "0",
-            multipled: "0",
-            func: "JZD_XIAN",
-            optionValue: "town",
-            placeholder: "乡镇街道",
-            unAutoLoad: "1",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "村",
-            span: "auto / 25 / auto / 31",
-            type: "SELECT",
-            showTitle: "0",
-            paged: "0",
-            multipled: "0",
-            label: "JZD_CHUN",
-            func: "JZD_JIANDAO",
-            optionValue: "ZJ-village",
-            placeholder: "村/居委会",
-            unAutoLoad: "1",
-        },
-        {
-            id: uuid(),
-            value: "",
-            title: "居住详细地址",
-            span: "auto / 1 / auto / 31",
-            type: "INPUT",
-            showTitle: "1",
-            label: "VC_JZDZXXDZ",
-        }])
+        comp: () => areaWithDetail("JZD", "居住地址", "居住详细地址", "VC_JZDZXXDZ"),
     }
 }

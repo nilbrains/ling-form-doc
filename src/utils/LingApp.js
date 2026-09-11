@@ -10,8 +10,15 @@ export function useLingApp(onInitFun = () => {}) {
     init: (option) => {
       return new Promise((resolve, reject) => {
         try {
-          console.log("[lingapp] option === > " + JSON.stringify(option));
-          configStore.fillConfig(option);
+          // 接口地址属于运行环境配置，不进表单配置，支持宿主注入覆盖
+          const { dictUrl, dictAllUrl, ...formConfig } = option || {};
+          if (dictUrl || dictAllUrl) {
+            window.config = Object.assign({}, window.config, {
+              ...(dictUrl ? { dictUrl } : {}),
+              ...(dictAllUrl ? { dictAllUrl } : {}),
+            });
+          }
+          configStore.fillConfig(formConfig);
           resolve();
         } catch (error) {
           reject(error);
@@ -29,10 +36,13 @@ export function useLingApp(onInitFun = () => {}) {
     loadData: (datas) => {
       const __ = componentStore.components;
       __.forEach((it) => {
-        it.value = datas[it];
+        // 与 saveData 保持一致的取值口径：有 label 用 label，否则用 id
+        const key = (it?.label ?? "") === "" ? it?.id : it.label;
+        it.value = datas?.[key] ?? "";
         if (
-          (it.type == "RADIO" || it.type == "CHECK") &&
-          it.optionCheck != ""
+          (it.type === "RADIO" || it.type === "CHECK") &&
+          typeof it.optionCheck === "string" &&
+          it.optionCheck !== ""
         ) {
           const _ = it.optionCheck.split(/\n/).filter((iti) => (iti.indexOf("@") > 0));
           const inputs = _.map((it) => {

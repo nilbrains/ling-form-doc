@@ -1,30 +1,16 @@
 <script setup>
-import { onMounted } from "vue"
 import { SIMPLE_PROPS } from './comp';
-import IconRemove from './icon/IconRemove.vue';
-import { useComponentsStore } from '@/store/comps';
-const componentStore = useComponentsStore();
+import CompShell from './CompShell.vue';
 
-const props = defineProps(SIMPLE_PROPS)
-const emit = defineEmits(["val", "remove", "sub-val"])
-
-onMounted(() => {
-})
+defineProps(SIMPLE_PROPS)
+defineEmits(["val", "remove", "sub-val"])
 </script>
 
 <template>
-    <div class="ling-comp ling-comp-text" :style="{
-        'grid-area': span
-    }" :class="{
-        readonly: readonly === '1',
-        required: required === '1',
-        showed: showed === '1'
-    }">
-        <div class="remove" @click.stop="$emit('remove')">
-            <icon-remove />
-        </div>
+    <comp-shell class="ling-comp-text" :span="span" :showed="showed" :readonly="readonly" :required="required"
+        @remove="$emit('remove')">
         {{ value || '' }}
-    </div>
+    </comp-shell>
 </template>
 
 <style lang="less" scoped></style>

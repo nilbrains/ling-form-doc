@@ -4,12 +4,16 @@
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
+    <title>Ling Doc Plus</title>
     <script>
-      window.config = {
-        dictUrl: "http://localhost:8966/api/dict",
-        dictAllUrl: "http://localhost:8966/api/dict-all",
-      }
+      // 接口地址默认值，宿主可通过 LingApp.init({ dictUrl, dictAllUrl }) 覆盖
+      window.config = Object.assign(
+        {
+          dictUrl: "http://localhost:8966/api/dict",
+          dictAllUrl: "http://localhost:8966/api/dict-all",
+        },
+        window.config || {},
+      )
     </script>
   </head>
   <body>

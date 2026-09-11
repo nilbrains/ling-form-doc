@@ -22,13 +22,13 @@
 </head>
 
 <body>
-    <iframe class="if" id="LING_DOC_APP" src="http://localhost:5173/" allow="fullscreen" width="100%"
+    <iframe class="if" id="LING_DOC_APP" src="http://localhost:6635/" allow="fullscreen" width="100%"
         height="100%"></iframe>
 
-    <!-- <script src="./test/1.js"></script> -->
+    <script src="./test/2.js"></script>
 
     <script>
-        const LING_PATH = "http://localhost:5173";
+        const LING_PATH = "http://localhost:6635";
         const lingApp = document.querySelector("#LING_DOC_APP");
         lingApp.onload = () => {
             const app = lingApp.contentWindow.LingApp;
@@ -53,7 +53,7 @@
                     }
                 ]
             }).then(() => {
-                app.loadComponents([]);
+                app.loadComponents(syxjb);
                 app.loadData({ "ARRR": "阿是丢弃帮我额u", "DATE": "2026-01-24", "DATE_TIME": "2026-01-24 12:06", "YYYY_DDDD": "001", "CHILDREN_QT_YYYY_DDDD": "123154654" })
             })
             console.log(app);

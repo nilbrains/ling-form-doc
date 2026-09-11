@@ -1,10 +1,10 @@
 <script setup>
-import { SIMPLE_PROPS } from './comp';
-import { computed, onMounted } from "vue";
+import { SIMPLE_PROPS, parseOptionCheck } from './comp';
+import { computed, onUnmounted } from "vue";
 import { ref } from "vue";
 import { api } from "@/utils/api";
 import { listenerDataChange } from './mitt';
-import IconRemove from './icon/IconRemove.vue';
+import CompShell from './CompShell.vue';
 import { useComponentsStore } from '@/store/comps';
 import { useConfigStore } from '@/store/config';
 const configStore = useConfigStore();
@@ -26,15 +26,10 @@ const realOptions = computed(() => {
             return removeOptions.value
         }
     } else {
-        const options = props.optionCheck;
-        const _ = options.split(/\n/).filter(it => it != "");
-        return _.map(it => {
-            const __ = it.split(":");
-            return ({
-                field_name: (__[1] || __[0]).trim(),
-                field_value: __[0].trim(),
-            })
-        });
+        return parseOptionCheck(props.optionCheck).map((it) => ({
+            field_name: it.label,
+            field_value: it.value,
+        }));
     }
 })
 
@@ -44,6 +39,10 @@ const loading = ref(false)
 
 function loadData(query, topId = "", topType = "") {
     if (configStore.config.design) {
+        return;
+    }
+    // 宿主未配置字典接口时不发请求，避免误请求当前页面地址
+    if (!window.config?.dictUrl) {
         return;
     }
     loading.value = true;
@@ -121,16 +120,23 @@ function prevPage() {
 
 
 const modelValue = computed(() => {
-    return props.value.includes(',') ? props.value.split(',') : props.value;
+    const v = props.value
+    // 多选返回数组、单选返回字符串，避免非字符串值导致 includes 报错
+    if (Array.isArray(v)) {
+        return props.multipled === "1" ? v.map((it) => `${it}`) : `${v[0] ?? ""}`
+    }
+    const text = `${v ?? ""}`
+    return props.multipled === "1" ? text.split(",").filter((it) => it !== "") : text
 })
 
 const lastValue = ref(props.optionValue)
 
-// 监听数据内容
-if ((props.func ?? "") != "") {
-    listenerDataChange((items) => {
+// 监听数据内容，卸载时只解绑自己的监听
+let removeListener = null;
+if ((props.func ?? "") !== "") {
+    removeListener = listenerDataChange((items) => {
         const _ = items.filter(it => it.label === props.func)
-        if ([..._]?.length > 0) {
+        if (_?.length > 0) {
             const itemValue = _[0]?.value || "";
             if (itemValue !== lastValue.value) {
                 lastValue.value = itemValue;
@@ -142,41 +148,17 @@ if ((props.func ?? "") != "") {
     })
 }
 
-onMounted(() => {
-    // console.log(componentStore.options[props.id]);
-
-    // if (props.func) {
-    // const _ = componentStore.getComponent(props.func);
-    // if (_) {
-    // loadData("", _?.value || "", _?.optionValue || "");
-    // }
-    // } else {
-    // loadData("")
-    // }
+onUnmounted(() => {
+    removeListener?.();
 })
-
-function openPanel(v) {
-    if (v) {
-        return;
-    }
-}
-
 </script>
 
 <template>
-    <div class="ling-comp ling-comp-input" :style="{
-        'grid-area': span
-    }" :class="{
-        readonly: readonly === '1',
-        required: required === '1',
-        showed: showed === '1'
-    }">
-        <div class="remove" @click.stop="$emit('remove')">
-            <icon-remove />
-        </div>
+    <comp-shell class="ling-comp-input" :span="span" :showed="showed" :readonly="readonly" :required="required"
+        @remove="$emit('remove')">
         <label v-if="showTitle === '1'">{{ title || '' }}</label>
         <el-select v-if="paged != '1'" :multiple="multipled === '1'" :model-value="modelValue || ''" @change="setVal"
-            @visible-change="openPanel" :placeholder="placeholder || ''">
+            :placeholder="placeholder || ''">
             <el-option v-for="item in realOptions" :key="item.field_value" :label="item.field_name"
                 :value="item.field_value">
                 <span style="float: left">{{ item.field_name }}</span>
@@ -186,8 +168,7 @@ function openPanel(v) {
             </el-option>
         </el-select>
         <el-select v-else :multiple="multipled === '1'" :model-value="modelValue || ''" @change="setVal" filterable
-            remote :remote-method="remoteMethod" :loading="loading" :placeholder="placeholder || ''"
-            @visible-change="openPanel">
+            remote :remote-method="remoteMethod" :loading="loading" :placeholder="placeholder || ''">
             <el-option v-for="item in realOptions" :key="item.field_value" :label="item.field_name"
                 :value="item.field_value">
                 <span style="float: left">{{ item.field_name }}</span>
@@ -205,7 +186,7 @@ function openPanel(v) {
             </template>
         </el-select>
         <span v-if="showFooter === '1'">{{ footer || '' }}</span>
-    </div>
+    </comp-shell>
 </template>
 
 <style lang="less" scoped></style>

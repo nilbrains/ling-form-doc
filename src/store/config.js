@@ -12,8 +12,6 @@ export const useConfigStore = defineStore("config", () => {
   const config = ref(DEF_CONFIG);
   function fillConfig(obj) {
     config.value = Object.assign({}, DEF_CONFIG, obj);
-    console.log(config.value);
-
   }
   return { config, fillConfig };
 });

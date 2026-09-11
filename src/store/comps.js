@@ -29,40 +29,43 @@ export const useComponentsStore = defineStore("components", () => {
     return components.value.findIndex((it) => it.id === id);
   }
 
+  // 按 id 或 label 查找组件，找不到返回 null，避免 -1 下标写入抛错
+  function findItem(id) {
+    return components.value.find((it) => it.id === id || it.label === id);
+  }
+
   function chengeItem(id, itemConfig) {
-    const idx = components.value.findIndex((it) => it.id === id);
-    components.value[idx] = itemConfig;
+    const target = components.value.find((it) => it.id === id);
+    if (!target) return;
+    // 字段级合并保留对象引用，避免子组件整体重渲染、输入框失焦
+    Object.assign(target, itemConfig);
   }
 
   function setValue(id, value) {
-    const idx = components.value.findIndex(
-      (it) => it.id === id || it.label === id,
-    );
-    components.value[idx].value = value;
+    const item = findItem(id);
+    if (!item) return;
+    item.value = value;
   }
 
   function setRequired(id, value) {
-    const idx = components.value.findIndex(
-      (it) => it.id === id || it.label === id,
-    );
-    components.value[idx].required = value;
+    const item = findItem(id);
+    if (!item) return;
+    item.required = value;
   }
 
   function setShowed(id, value) {
-    const idx = components.value.findIndex(
-      (it) => it.id === id || it.label === id,
-    );
-    components.value[idx].showed = value;
+    const item = findItem(id);
+    if (!item) return;
+    item.showed = value;
   }
 
   function setSubValue(id, b, v) {
-    const idx = components.value.findIndex(
-      (it) => it.id === id || it.label === id,
-    );
-    if (!("childrens" in components.value[idx])) {
-      components.value[idx].childrens = {};
+    const item = findItem(id);
+    if (!item) return;
+    if (!item.childrens) {
+      item.childrens = {};
     }
-    components.value[idx].childrens[`${b}`] = v;
+    item.childrens[`${b}`] = v;
   }
 
   function removeItem(item) {
